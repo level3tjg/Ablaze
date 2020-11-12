@@ -1,0 +1,1 @@
+{ Filter = { Bundles = ( "com.apple.springboard", "com.apple.Music", "com.spotify.client", "com.aspiro.TIDAL", "com.globaldelight.iBoom", "com.google.ios.youtubemusic", "com.adityarajveer.Marvis" ); }; }

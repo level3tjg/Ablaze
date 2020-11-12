@@ -1,0 +1,10 @@
+Package: com.level3tjg.ablaze
+Name: Ablaze
+Depends: mobilesubstrate, preferenceloader, com.muirey03.libmryipc, firmware(>=13.4)
+Version: 1.0.8
+Architecture: iphoneos-arm
+Description: Colorful animated Music backgrounds
+Depiction: https://level3tjg.xyz/repo/depictions/?p=com.level3tjg.ablaze
+Maintainer: level3tjg
+Author: level3tjg
+Section: Tweaks
