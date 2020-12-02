@@ -106,22 +106,23 @@ extern void InitLockScreenPlayer();
 }
 %new
 - (void)trackDidChange:(NSNotification *)notification {
-  // Sometimes crashes spotify if playing via spotify connect
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     MRMediaRemoteGetNowPlayingInfo(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(CFDictionaryRef result) {
-      NSData *imageData = [(__bridge NSDictionary *)result objectForKey:@"kMRMediaRemoteNowPlayingInfoArtworkData"];
-      MRClient *client = [[%c(MRClient) alloc] initWithData:[(__bridge NSDictionary *)result objectForKey:@"kMRMediaRemoteNowPlayingInfoClientPropertiesData"]];
-      BOOL isMusic = [client.bundleIdentifier isEqualToString:@"com.apple.Music"];
-      BOOL isSpotify = [client.bundleIdentifier isEqualToString:@"com.spotify.client"];
-      BOOL isTidal = [client.bundleIdentifier isEqualToString:@"com.aspiro.TIDAL"];
-      BOOL isBoom = [client.bundleIdentifier isEqualToString:@"com.globaldelight.iBoom"];
-      BOOL isYTMusic = [client.bundleIdentifier isEqualToString:@"com.google.ios.youtubemusic"];
-      dispatch_async(dispatch_get_main_queue(), ^(){
-        if(imageData)
-          if(IN_SPRINGBOARD || (IN_MUSIC && isMusic) || (IN_MARVIS && isMusic) || (IN_SPOTIFY && isSpotify) || (IN_TIDAL && isTidal) || (IN_BOOM && isBoom) || (IN_YTMUSIC && isYTMusic))
-            if ([NSStringFromClass([self class]) isEqualToString:@"MusicLyricsBackgroundView"])
-              self.backgroundArtworkCatalog = [MPArtworkCatalog staticArtworkCatalogWithImage:[UIImage imageWithData:imageData]];
-      });
+      if (result) {
+        NSData *imageData = [(__bridge NSDictionary *)result objectForKey:@"kMRMediaRemoteNowPlayingInfoArtworkData"];
+        MRClient *client = [[%c(MRClient) alloc] initWithData:[(__bridge NSDictionary *)result objectForKey:@"kMRMediaRemoteNowPlayingInfoClientPropertiesData"]];
+        BOOL isMusic = [client.bundleIdentifier isEqualToString:@"com.apple.Music"];
+        BOOL isSpotify = [client.bundleIdentifier isEqualToString:@"com.spotify.client"];
+        BOOL isTidal = [client.bundleIdentifier isEqualToString:@"com.aspiro.TIDAL"];
+        BOOL isBoom = [client.bundleIdentifier isEqualToString:@"com.globaldelight.iBoom"];
+        BOOL isYTMusic = [client.bundleIdentifier isEqualToString:@"com.google.ios.youtubemusic"];
+        dispatch_async(dispatch_get_main_queue(), ^(){
+          if(imageData)
+            if(IN_SPRINGBOARD || (IN_MUSIC && isMusic) || (IN_MARVIS && isMusic) || (IN_SPOTIFY && isSpotify) || (IN_TIDAL && isTidal) || (IN_BOOM && isBoom) || (IN_YTMUSIC && isYTMusic))
+              if ([NSStringFromClass([self class]) isEqualToString:@"MusicLyricsBackgroundView"])
+                self.backgroundArtworkCatalog = [MPArtworkCatalog staticArtworkCatalogWithImage:[UIImage imageWithData:imageData]];
+        });
+      }
     });
   });
 }
