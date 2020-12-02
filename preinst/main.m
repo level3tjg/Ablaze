@@ -21,9 +21,9 @@ int main(int argc, char *argv[], char *envp[]) {
       musicAsset = asset;
     }
   }
+  __block NSError *globalError;
   if (musicAsset) {
     dispatch_group_enter(group);
-    __block NSError *globalError;
     dispatch_async(queue, ^{
       [rawManager GET:[NSString stringWithFormat:@"%@%@", musicAsset[@"__BaseURL"],
                                                  musicAsset[@"__RelativePath"]]
