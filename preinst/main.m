@@ -1,36 +1,80 @@
+#include <AFNetworking/AFNetworking.h>
+#include <SSZipArchive/SSZipArchive.h>
 #include <stdio.h>
 
-@interface LSApplicationProxy : NSObject
-@property (nonatomic, assign) NSURL *bundleURL;
-+ (LSApplicationProxy *)applicationProxyForIdentifier:(NSString *)bundleIdentifier;
-@end
-
 int main(int argc, char *argv[], char *envp[]) {
-	@autoreleasepool {
-		NSFileManager *fm = [NSFileManager defaultManager];
-		NSString *target = @"/Library/Frameworks/MusicApplication.framework";
-		NSURL *bundleURL = [LSApplicationProxy applicationProxyForIdentifier:@"com.apple.Music"].bundleURL;
-		if (bundleURL) {
-			printf("Found Music.app\n");
-			NSString *framework = [bundleURL.path stringByAppendingPathComponent:@"Frameworks/MusicApplication.framework"];
-			if (![fm fileExistsAtPath:target] || ![fm contentsEqualAtPath:framework andPath:target]) {
-				printf("Copying MusicApplication.framework\n");
-				NSError *error;
-				[fm copyItemAtPath:framework toPath:target error:&error];
-				if (error) {
-					printf("Error: %s\n", [error.description UTF8String]);
-					return 1;
-				}
-				return 0;
-			}
-		}
-		else {
-			printf("\n");
-			for(int i = 0; i < 3; i++)
-				printf("*** Install the Apple Music app before installing Ablaze ***\n");
-			printf("\n");
-			return 1;
-		}
-		return 0;
-	}
+  dispatch_group_t group = dispatch_group_create();
+  dispatch_queue_t queue = dispatch_queue_create("com.app", DISPATCH_QUEUE_CONCURRENT);
+  AFHTTPSessionManager *rawManager = [AFHTTPSessionManager manager];
+  rawManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+  rawManager.responseSerializer.acceptableContentTypes =
+      [NSSet setWithArray:@[ @"binary/octet-stream" ]];
+  rawManager.requestSerializer.timeoutInterval = 60;
+  rawManager.completionQueue = queue;
+  NSDictionary *plist = [NSDictionary
+      dictionaryWithContentsOfFile:@"/var/MobileAsset/Assets/com_apple_MobileAsset_SystemApp/"
+                                   @"com_apple_MobileAsset_SystemApp.xml"];
+  NSDictionary *assets = plist[@"Assets"];
+  NSDictionary *musicAsset;
+  for (NSDictionary *asset in assets) {
+    if ([asset[@"AppBundleID"] isEqualToString:@"com.apple.Music"]) {
+      musicAsset = asset;
+    }
+  }
+  dispatch_group_enter(group);
+  __block NSError *globalError;
+  dispatch_async(queue, ^{
+    [rawManager GET:[NSString stringWithFormat:@"%@%@", musicAsset[@"__BaseURL"],
+                                               musicAsset[@"__RelativePath"]]
+        parameters:nil
+        headers:@{
+          @"Range" : [NSString stringWithFormat:@"bytes=%@-%@", musicAsset[@"_StartOfDataRange"],
+                                                @([musicAsset[@"_StartOfDataRange"] integerValue] +
+                                                  [musicAsset[@"_LengthOfDataRange"] integerValue])]
+        }
+        progress:nil
+        success:^(NSURLSessionDataTask *task, NSData *data) {
+          [data writeToFile:@"/tmp/MusicAsset.zip" atomically:YES];
+          [SSZipArchive unzipFileAtPath:@"/tmp/MusicAsset.zip"
+                          toDestination:@"/tmp/MusicAsset"
+                        progressHandler:nil
+                      completionHandler:^(NSString *path, BOOL success, NSError *error) {
+                        globalError = error;
+                        if (error || !success) {
+                          if (error)
+                            NSLog(@"Error unzipping MobileAsset: %@", error.localizedDescription);
+                          else
+                            NSLog(@"Failed to unzip MobileAsset, wtf?");
+                          dispatch_group_leave(group);
+                        }
+                        if (success) {
+                          NSFileManager *fm = [NSFileManager defaultManager];
+                          [fm removeItemAtPath:@"/Library/Frameworks/MusicApplication.framework"
+                                         error:nil];
+                          [fm moveItemAtPath:@"/tmp/MusicAsset/AssetData/Music.app/Frameworks/"
+                                             @"MusicApplication.framework"
+                                      toPath:@"/Library/Frameworks/MusicApplication.framework"
+                                       error:&error];
+                          globalError = error;
+                          if (error) {
+                            NSLog(@"Error moving MusicApplication.framework: %@",
+                                  error.localizedDescription);
+                            dispatch_group_leave(group);
+                          } else {
+                            [fm removeItemAtPath:@"/tmp/MusicAsset" error:nil];
+                            [fm removeItemAtPath:@"/tmp/MusicAsset.zip" error:nil];
+                            dispatch_group_leave(group);
+                          }
+                        }
+                      }];
+        }
+        failure:^(NSURLSessionDataTask *task, NSError *error) {
+          globalError = error;
+          NSLog(@"Error downloading MobileAsset: %@", error.localizedDescription);
+          dispatch_group_leave(group);
+        }];
+  });
+  dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+  if (globalError) return globalError.code;
+  return 0;
 }

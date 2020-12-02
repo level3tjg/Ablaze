@@ -22,6 +22,7 @@ SUBPROJECTS += preinst
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
 before-package::
+	cp layout/DEBIAN/prerm $(THEOS_STAGING_DIR)/DEBIAN/prerm
 	mv $(THEOS_STAGING_DIR)/Library/MobileSubstrate/DynamicLibraries/Ablaze.dylib $(THEOS_STAGING_DIR)/Library/MobileSubstrate/DynamicLibraries/zz_Ablaze.dylib
 	mv $(THEOS_STAGING_DIR)/Library/MobileSubstrate/DynamicLibraries/Ablaze.plist $(THEOS_STAGING_DIR)/Library/MobileSubstrate/DynamicLibraries/zz_Ablaze.plist
 
