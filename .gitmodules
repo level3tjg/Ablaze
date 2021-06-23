@@ -1,15 +1,6 @@
-<<<<<<< HEAD
-[submodule "AFNetworking"]
-	path = AFNetworking
-	url = https://github.com/AFNetworking/AFNetworking
-[submodule "ZipArchive"]
-	path = ZipArchive
-	url = https://github.com/ZipArchive/ZipArchive
-=======
 [submodule "ZipArchive"]
 	path = ZipArchive
 	url = https://github.com/ZipArchive/ZipArchive
 [submodule "AFNetworking"]
 	path = AFNetworking
 	url = https://github.com/AFNetworking/AFNetworking
->>>>>>> d43c276f5d8be9985f5981ce140e1e8e461c6712
