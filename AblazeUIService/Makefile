@@ -7,7 +7,7 @@ APPLICATION_NAME = AblazeUIService
 AblazeUIService_FILES = main.m AblazeViewController.m
 AblazeUIService_FRAMEWORKS = UIKit MediaPlayer
 AblazeUIService_PRIVATE_FRAMEWORKS = MediaRemote
-AblazeUIService_CFLAGS = -fobjc-arc -I..
+AblazeUIService_CFLAGS = -fobjc-arc -I.. -DRLOG_IP_ADDRESS=\"$(shell ipconfig getifaddr en0)\"
 AblazeUIService_CODESIGN_FLAGS = -Sentitlements.xml
 
 include $(THEOS_MAKE_PATH)/application.mk
