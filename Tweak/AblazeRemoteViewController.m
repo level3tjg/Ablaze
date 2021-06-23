@@ -11,6 +11,8 @@
       fromServiceWithBundleIdentifier:@"com.level3tjg.AblazeUIService"
                     connectionHandler:^(_UIRemoteViewController *remoteViewController,
                                         NSError *error) {
+                      // Attempting to get lockscreen working... not successfully.
+
                       // remoteViewController.serviceViewShouldShareTouchesWithHost = YES;
                       // remoteViewController.view.layer.securityMode = kCALayerSecurityModeSecure;
                       // _UIRemoteView *remoteView = object_getIvar(

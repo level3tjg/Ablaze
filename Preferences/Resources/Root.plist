@@ -46,18 +46,6 @@
 				<key>label</key>
 				<string>Tidal</string>
 			</dict>
-			<!-- <dict>
-				<key>cell</key>
-				<string>PSSwitchCell</string>
-				<key>default</key>
-				<true/>
-				<key>defaults</key>
-				<string>com.level3tjg.ablaze14</string>
-				<key>key</key>
-				<string>enableMarvis</string>
-				<key>label</key>
-				<string>Marvis</string>
-			</dict> -->
 			<dict>
 				<key>cell</key>
 				<string>PSGroupCell</string>

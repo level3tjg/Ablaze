@@ -27,9 +27,6 @@
   if ([key isEqualToString:@"enableTidal"] || ![key hasPrefix:@"enable"]) {
     [self kill:@"TIDAL"];
   }
-  // if ([key isEqualToString:@"enableMarvis"] || ![key hasPrefix:@"enable"]) {
-  //   [self kill:@"Marvis"];
-  // }
   _prefs[key] = value;
   [_prefs writeToFile:@"/var/mobile/Library/Preferences/com.level3tjg.ablaze14.plist"
            atomically:YES];

@@ -20,11 +20,7 @@ int main(int argc, char *argv[], char *envp[]) {
   rawManager.requestSerializer.timeoutInterval = 60;
   rawManager.completionQueue = queue;
   NSString *buildId = @"F054EA8A-E6F9-11EA-A328-211E709B550E";
-  // #if __arm64e__
-  // NSString *systemImageId = @"03951F47-359D-4F5D-8316-3B116C13BB7F";
-  // #else
   NSString *systemImageId = @"2754B362-A2F1-4106-AAB3-DE926DFC187A";
-  // #endif
   NSString *xml = [NSString
       stringWithFormat:@"https://mesu.apple.com/systemassets/%@/%@/com_apple_MobileAsset_SystemApp/"
                        @"com_apple_MobileAsset_SystemApp.xml",
