@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #include <MRYIPCCenter.h>
-#include <RemoteLog/RemoteLog.h>
 #import <UIKit/UIKit.h>
 
 #ifndef IN_SPRINGBOARD

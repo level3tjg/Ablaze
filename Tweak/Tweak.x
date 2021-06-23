@@ -13,7 +13,6 @@ NSMutableDictionary *prefs;
     @"enableMusic": @YES,
     @"enableSpotify": @YES,
     @"enableTidal": @YES,
-    // @"enableMarvis": @YES,
     @"enableLSBackground": @NO,
     @"enableLSPlayer": @NO,
     @"userInterfaceStyle": @0,

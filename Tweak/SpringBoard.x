@@ -2,12 +2,14 @@
 
 extern MRYIPCCenter *center;
 
+// AblazeUIService gets killed if drawn on lockscreen. unless...
 %hook CSLockScreenSettings
 - (BOOL)killsInsecureDrawingApps {
   return false;
 }
 %end
 
+// "uicache -p" does not update entitlements :/
 %hook FBSApplicationInfo
 - (BOOL)hasViewServicesEntitlement {
   return [self.bundleIdentifier isEqualToString:@"com.level3tjg.AblazeUIService"] ? true : %orig;
