@@ -1,0 +1,11 @@
+Package: com.level3tjg.ablaze14
+Name: Ablaze (iOS 14)
+Version: 1.0~b8
+Architecture: iphoneos-arm
+Description: Colorful animated music backgrounds
+Depiction: https://level3tjg.xyz/repo/depictions/?p=com.level3tjg.ablaze14
+Maintainer: level3tjg
+Author: level3tjg
+Section: Tweaks
+Pre-Depends: sed
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 14.0), com.muirey03.libmryipc
